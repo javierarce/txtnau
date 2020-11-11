@@ -51,7 +51,7 @@ const publishTweet = (status) => {
   }
 
   T.post('statuses/update', { status }, (err, data, response) => {
-    log(data)
+    log(`Tweet published: ${status}`)
   })
 }
 
@@ -67,12 +67,12 @@ const getDescription = (result) => {
 const analyzeTweet = (tweet) => {
 
   if (!wasTweetPublished(tweet.id)) {
-    log('Tweet already published')
+    log(`Tweet ${tweet.id} already published`)
     return
   }
 
   if (!hasImages(tweet))  {
-    log('No images found')
+    log(`No images found in ${tweet.id}`)
     return
   }
 
