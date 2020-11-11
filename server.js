@@ -48,9 +48,7 @@ const writeMetadata = (data) => {
 }
 
 const onResponse = (err, data, response) => {
-  for (var i = data.length -1; i >= 0; i++) {
-    analyzeTweet(data[i])
-  }
+  analyzeTweet(data[0])
 }
 
 const hasImages = (tweet) => {
@@ -79,7 +77,7 @@ const analyzeTweet = (tweet) => {
 
   if (!wasTweetPublished(tweet.id)) {
     log(`Tweet ${tweet.id} already published`)
-   // return
+    return
   }
 
   if (!hasImages(tweet))  {
