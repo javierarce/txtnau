@@ -14,7 +14,7 @@
     "twit": "^2.2.11"
   },
   "engines": {
-    "node": "12.18.x"
+    "node": "10.15.3"
   },
   "repository": {
     "url": "https://github.com/javierarce/txtnau"
