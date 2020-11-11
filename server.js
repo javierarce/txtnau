@@ -22,6 +22,11 @@ const TWITTER_CONFIG = {
 
 const T = new Twit(TWITTER_CONFIG)
 
+const log = (txt) => {
+  console.log(txt)
+  fs.appendFileSync('log.txt', `${new Date()}: ${txt}\n`)
+}
+
 const wasTweetPublished = (newID) => {
   let savedID = metadata.id
 
@@ -31,7 +36,6 @@ const wasTweetPublished = (newID) => {
 const writeMetadata = (data) => {
   fs.writeFileSync('metadata.json', JSON.stringify(data))
 }
-
 
 const onResponse = (err, data, response) => {
   analyzeTweet(data[0])
@@ -47,7 +51,7 @@ const publishTweet = (status) => {
   }
 
   T.post('statuses/update', { status }, (err, data, response) => {
-    console.log(data)
+    log(data)
   })
 }
 
@@ -63,12 +67,12 @@ const getDescription = (result) => {
 const analyzeTweet = (tweet) => {
 
   if (!wasTweetPublished(tweet.id)) {
-    console.log('Tweet already published')
+    log('Tweet already published')
     return
   }
 
   if (!hasImages(tweet))  {
-    console.log('No images found')
+    log('No images found')
     return
   }
 
@@ -83,7 +87,7 @@ const analyzeTweet = (tweet) => {
     const description = getDescription(result) 
 
     if (description) {
-      console.log(description)
+      log(description)
       publishTweet(description)
     }
 
