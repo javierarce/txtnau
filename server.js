@@ -137,7 +137,7 @@ const buildHTML = () => {
 
     console.log(html);
 
-    let fileName = 'index.html'
+    let fileName = 'www/index.html'
     let stream = fs.createWriteStream(fileName)
 
     stream.once('open', (fd) => {
