@@ -96,7 +96,8 @@ const analyzeTweet = (tweet) => {
     const description = getDescription(result) 
 
     if (description) {
-      log(description)
+      log(`(${tweet.id}) ${description}`)
+
       publishTweet(description)
       saveTweet(description)
       buildHTML()
@@ -111,6 +112,7 @@ const buildHTML = () => {
     if (err) {
       throw err;
     }
+
     let lines = data.toString().trim().split('\n');
 
     let body = []
@@ -134,8 +136,6 @@ const buildHTML = () => {
 
     const html ='<!DOCTYPE html>'
       + '<html><head>' + header + '</head><body>' + body + '</body></html>'
-
-    console.log(html);
 
     let fileName = 'www/index.html'
     let stream = fs.createWriteStream(fileName)
