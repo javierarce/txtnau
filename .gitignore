@@ -3,3 +3,5 @@ node_modules
 .env
 tags
 log.txt
+tweets.txt
+index.html
