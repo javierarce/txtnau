@@ -105,8 +105,6 @@ const analyzeTweet = (tweet) => {
   })
 }
 
-T.get('statuses/user_timeline', { user_id: process.env.TWITTER_USER_ID, count: TWITTER_COUNT }, onResponse)
-
 const buildHTML = () => {
   fs.readFile('tweets.txt', function(err, data) {
     if (err) {
@@ -120,22 +118,23 @@ const buildHTML = () => {
     lines.forEach((line) => {
 
       if (/^[a|an] /.test(line)) {
-        line = `I see ${line}`
+        line = `I see ${line},`
       } else {
         const [head, ...rest] = line.split(' '); 
         let article = Articles.articlize(head)
-        line = `I see ${article} ${rest.join(' ')}`
+        line = `I see ${article} ${rest.join(', ')}`
       }
 
-      body.push(`<p>${line}</p>`)
+      body.push(`<span>${line}</span> `)
     })
 
+    body.push('<span>I see…</span>')
     body = body.join('')
 
-    const header = '<style>body{ font-size: 1.6em; margin: 3em;} p { line-height: 145%; margin: 0 0 0.4em}</style>'
+    let top = '<!DOCTYPE html> <html> <head> <style> body { font-size: 1.8em; line-height: 145%; font-weight: normal; margin: 3em; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; } span { opacity: 0; transition: opacity 800ms ease-in-out; } span.is-visible { opacity: 1; } .Content { width: 800px; margin: auto; } </style> <script> window.onload = () => { let i = 0; document.querySelectorAll("span").forEach((item) => { i += 200; item.style.transitionDelay = `${i}ms`; item.classList.add("is-visible"); }) } </script> </head> <body> <div class="Content">'
 
-    const html ='<!DOCTYPE html>'
-      + '<html><head>' + header + '</head><body>' + body + '</body></html>'
+    let bottom = '</div> </body> </html>'
+    const html = `${top}${body}${bottom}`
 
     let fileName = 'www/index.html'
     let stream = fs.createWriteStream(fileName)
@@ -145,4 +144,8 @@ const buildHTML = () => {
     })
   })
 }
+
+
+T.get('statuses/user_timeline', { user_id: process.env.TWITTER_USER_ID, count: TWITTER_COUNT }, onResponse)
+
 
