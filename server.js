@@ -71,18 +71,18 @@ const hasImages = (tweet) => {
   return tweet && tweet.entities && tweet.entities.media && tweet.entities.media.length
 }
 
-const publishTweet = (status) => {
+const publishTweet = (text) => {
   log(`Publish: ${PUBLISH}`)
   if (!PUBLISH) {
     return
   }
 
-  status = tools.articlice(status)
+  status = tools.articlice(text)
   log('start -----')
 
   lite.post('statuses/update', { status }).then(() => {
     log(`Tweet published: ${status}`)
-    saveTweet(status)
+    saveTweet(text)
   }).catch((e) => {
     console.log(e)
   })
