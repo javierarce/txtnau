@@ -29,7 +29,7 @@ const TWITTER_CONFIG = {
 const T = new Twit(TWITTER_CONFIG)
 
 const saveTweet = (status) => {
-  fs.appendFile('tweets.txt', `${status}\n`, (error) => {
+  fs.appendFile(`${__dirname}/tweets.txt`, `${status}\n`, (error) => {
     if (error) {
       log(error)
     }
@@ -40,7 +40,7 @@ const saveTweet = (status) => {
 const log = (txt) => {
   let status = `${new Date()}: ${txt}\n`
   console.log(status)
-  fs.appendFileSync('log.txt', status)
+  fs.appendFileSync(`${__dirname}/log.txt`, status)
 }
 
 const wasTweetPublished = (newID) => {
@@ -50,7 +50,7 @@ const wasTweetPublished = (newID) => {
 }
 
 const writeMetadata = (data) => {
-  fs.writeFileSync('metadata.json', JSON.stringify(data))
+  fs.writeFileSync(`${__dirname}/metadata.json`, JSON.stringify(data))
 }
 
 const onResponse = (err, data, response) => {
