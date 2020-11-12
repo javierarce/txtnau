@@ -5,7 +5,7 @@ const fs = require('fs')
 const Twit = require('twit')
 
 const Eye = require('./lib/eye')
-const eye = new Vision()
+const eye = new Eye()
 
 const Tools = require('./lib/tools')
 const tools = new Tools()
