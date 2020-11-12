@@ -7,6 +7,9 @@ const Vision = require('./lib/eye')
 const Eye = new Vision()
 const Twit = require('twit')
 
+const Tools = require('./lib/tools')
+const tools = new Tools()
+
 const HTML = require('./lib/html')
 const html = new HTML() 
 
@@ -57,9 +60,13 @@ const hasImages = (tweet) => {
 }
 
 const publishTweet = (status) => {
+
   if (!PUBLISH) {
     return
   }
+
+
+  status = tools.articlice(status)
 
   T.post('statuses/update', { status }, (err, data, response) => {
     log(`Tweet published: ${status}`)
@@ -106,7 +113,4 @@ const analyzeTweet = (tweet) => {
   })
 }
 
-
-
 T.get('statuses/user_timeline', { user_id: process.env.TWITTER_USER_ID, count: TWITTER_COUNT }, onResponse)
-
