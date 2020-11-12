@@ -79,7 +79,7 @@ const publishTweet = (status) => {
       return
     }
     log(`Tweet published: ${status}`)
-    saveTweet(description)
+    saveTweet(status)
   })
 }
 
