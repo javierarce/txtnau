@@ -4,15 +4,6 @@ require('dotenv').config({ path: __dirname + '/.env' })
 const fs = require('fs')
 const Twit = require('twit')
 
-const Lite = require('twitter-lite')
-
-const lite = new Lite({
-  consumer_key: process.env.TWITTER_CONSUMER_KEY,
-  consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
-  access_token_key: process.env.TWITTER_CONSUMER_ACCESS_TOKEN,
-  access_token_secret: process.env.TWITTER_CONSUMER_ACCESS_TOKEN_SECRET,
-})
-
 const Eye = require('./lib/eye')
 const eye = new Eye()
 
@@ -25,7 +16,6 @@ const html = new HTML()
 let metadata = require('./metadata.json')
 
 const PUBLISH = true
-const SEE = true
 const TWITTER_COUNT = 1
 
 const TWITTER_CONFIG = {
@@ -71,31 +61,16 @@ const hasImages = (tweet) => {
   return tweet && tweet.entities && tweet.entities.media && tweet.entities.media.length
 }
 
-const publishTweet = (text) => {
-  log(`Publish: ${PUBLISH}`)
-  if (!PUBLISH) {
-    return
-  }
-
-  let status = tools.articlice(text)
-  log('start -----')
-
-  lite.post('statuses/update', { status }).then(() => {
-    log(`Tweet published: ${status}`)
-    saveTweet(text)
-  }).catch((e) => {
-    console.log(e)
-  })
-
-  log('---- end')
-}
-
 const getDescription = (result) => {
   if (result && result.description && result.description.captions.length) {
     return result.description.captions[0].text
   }
 
   return undefined
+}
+
+const pickMediaURLFromTweet = (tweet) => {
+  return tweet.entities.media[0].media_url_https
 }
 
 const analyzeTweet = (tweet) => {
@@ -109,30 +84,37 @@ const analyzeTweet = (tweet) => {
     return
   }
 
-  if (SEE) {
-    let URL = tweet.entities.media[0].media_url_https
+  let URL = pickMediaURLFromTweet(tweet) 
 
-    eye.see(URL).then((result) => {
-      onSeeResult(result, tweet)
-    })
-  }
+  eye.see(URL).then((result) => {
+    onSeeResult(result, tweet)
+  })
 }
 
 const onSeeResult = (result, tweet) => {
-  writeMetadata({ id: tweet.id, created_at: tweet.created_at })
-
   const description = getDescription(result) 
 
-  if (description) {
+  if (PUBLISH && description) {
+
     log(`(${tweet.id}) ${description}`)
+    log(`${PUBLISH}. I'm going to publish`)
 
-    try {
-      publishTweet(description)
-    } catch (e) {
-      log(`Error: ${e}`)
-    }
+    let status = tools.articlice(description)
 
-    html.build()
+    console.log(`... ${status}`);
+
+    T.post('statuses/update', { status }, (error, data, response) => {
+
+      if (error) {
+        log(`Error publishing tweet: ${error}`)
+        return
+      }
+
+      log(`Tweet published: ${status}`)
+      writeMetadata({ id: tweet.id, created_at: tweet.created_at })
+      saveTweet(description)
+      html.build()
+    })
   }
 }
 
