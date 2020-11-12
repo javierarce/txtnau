@@ -2,10 +2,10 @@
 require('dotenv').config({ path: __dirname + '/.env' })
 
 const fs = require('fs')
-
-const Vision = require('./lib/eye')
-const Eye = new Vision()
 const Twit = require('twit')
+
+const Eye = require('./lib/eye')
+const eye = new Vision()
 
 const Tools = require('./lib/tools')
 const tools = new Tools()
@@ -87,7 +87,6 @@ const getDescription = (result) => {
 }
 
 const analyzeTweet = (tweet) => {
-
   if (!hasImages(tweet))  {
     log(`No images found in ${tweet.id}`)
     return
@@ -104,15 +103,20 @@ const analyzeTweet = (tweet) => {
     return
   }
 
-  Eye.see(URL).then((result) => {
+  eye.see(URL).then((result) => {
     writeMetadata({ id: tweet.id, created_at: tweet.created_at })
     const description = getDescription(result) 
 
     if (description) {
       log(`(${tweet.id}) ${description}`)
 
-      publishTweet(description)
-      saveTweet(description)
+      try {
+        publishTweet(description)
+        saveTweet(description)
+      } catch (e) {
+        log(`Error: ${e}`)
+      }
+
       html.build()
     }
   })
