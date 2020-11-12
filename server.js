@@ -65,7 +65,6 @@ const publishTweet = (status) => {
     return
   }
 
-
   status = tools.articlice(status)
 
   T.post('statuses/update', { status }, (err, data, response) => {
