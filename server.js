@@ -115,7 +115,7 @@ const buildHTML = () => {
 
     let body = []
 
-    lines.forEach((line) => {
+    lines.reverse().forEach((line) => {
 
       if (/^[a|an] /.test(line)) {
         line = `I see ${line},`
@@ -128,7 +128,7 @@ const buildHTML = () => {
       body.push(`<span>${line}</span> `)
     })
 
-    body.push('<span>I see&hellp;</span>')
+    body.push('<span>I see&hellip;</span>')
     body = body.join('')
 
     let top = '<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"><title>txtnau</title><style> body { font-size: 1.8em; line-height: 145%; font-weight: normal; margin: 3em; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; } span { opacity: 0; transition: opacity 800ms ease-in-out; } span.is-visible { opacity: 1; } .Content { width: 800px; margin: auto; } </style> <script> window.onload = () => { let i = 0; document.querySelectorAll("span").forEach((item) => { i += 200; item.style.transitionDelay = `${i}ms`; item.classList.add("is-visible"); }) } </script> </head> <body> <div class="Content">'
