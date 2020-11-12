@@ -34,6 +34,7 @@ const saveTweet = (status) => {
     if (error) {
       log(error)
     }
+    log(`Tweet saved: ${status}`)
   })
 }
 
@@ -78,6 +79,7 @@ const publishTweet = (status) => {
       return
     }
     log(`Tweet published: ${status}`)
+    saveTweet(description)
   })
 }
 
@@ -100,29 +102,31 @@ const analyzeTweet = (tweet) => {
     return
   }
 
-  let URL = tweet.entities.media[0].media_url_https
+  if (SEE) {
+    let URL = tweet.entities.media[0].media_url_https
 
-  if (!SEE) {
-    return
+    eye.see(URL).then((result) => {
+      onSeeResult(result, tweet)
+    })
   }
+}
 
-  eye.see(URL).then((result) => {
-    writeMetadata({ id: tweet.id, created_at: tweet.created_at })
-    const description = getDescription(result) 
+const onSeeResult = (result, tweet) => {
+  writeMetadata({ id: tweet.id, created_at: tweet.created_at })
 
-    if (description) {
-      log(`(${tweet.id}) ${description}`)
+  const description = getDescription(result) 
 
-      try {
-        publishTweet(description)
-        saveTweet(description)
-      } catch (e) {
-        log(`Error: ${e}`)
-      }
+  if (description) {
+    log(`(${tweet.id}) ${description}`)
 
-      html.build()
+    try {
+      publishTweet(description)
+    } catch (e) {
+      log(`Error: ${e}`)
     }
-  })
+
+    html.build()
+  }
 }
 
 T.get('statuses/user_timeline', { user_id: process.env.TWITTER_USER_ID, count: TWITTER_COUNT }, onResponse)
