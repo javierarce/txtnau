@@ -72,22 +72,22 @@ const hasImages = (tweet) => {
 }
 
 const publishTweet = (status) => {
-
-  log(`${PUBLISH}. I'm going to publish`)
-
+  log(`Publish: ${PUBLISH}`)
   if (!PUBLISH) {
     return
   }
 
   status = tools.articlice(status)
-  console.log(`... ${status}`);
+  log('start -----')
 
-  lite.post("statuses/update", { status }).then(() => {
+  lite.post('statuses/update', { status }).then(() => {
     log(`Tweet published: ${status}`)
     saveTweet(status)
   }).catch((e) => {
     console.log(e)
   })
+
+  log('---- end')
 }
 
 const getDescription = (result) => {
