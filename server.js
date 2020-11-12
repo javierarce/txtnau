@@ -58,7 +58,7 @@ const onResponse = (err, data, response) => {
 }
 
 const hasImages = (tweet) => {
-  return tweet && tweet.entities && tweet.entities.media.length
+  return tweet && tweet.entities && tweet.entities.media && tweet.entities.media.length
 }
 
 const publishTweet = (status) => {
@@ -88,13 +88,13 @@ const getDescription = (result) => {
 
 const analyzeTweet = (tweet) => {
 
-  if (!wasTweetPublished(tweet.id)) {
-    log(`Tweet ${tweet.id} already published`)
+  if (!hasImages(tweet))  {
+    log(`No images found in ${tweet.id}`)
     return
   }
 
-  if (!hasImages(tweet))  {
-    log(`No images found in ${tweet.id}`)
+  if (!wasTweetPublished(tweet.id)) {
+    log(`Tweet ${tweet.id} already published`)
     return
   }
 
