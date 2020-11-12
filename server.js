@@ -4,7 +4,7 @@ require('dotenv').config({ path: __dirname + '/.env' })
 const fs = require('fs')
 const Twit = require('twit')
 
-import Lite from 'twitter-lite'
+const Lite = require('twitter-lite')
 
 const lite = new Lite({
   consumer_key: process.env.TWITTER_CONSUMER_KEY,
