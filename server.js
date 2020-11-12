@@ -63,11 +63,14 @@ const hasImages = (tweet) => {
 
 const publishTweet = (status) => {
 
+  log(`${PUBLISH}. I'm going to publish`)
+
   if (!PUBLISH) {
     return
   }
 
   status = tools.articlice(status)
+  console.log(`... ${status}`);
 
   T.post('statuses/update', { status }, (error, data, response) => {
     if (error) {
