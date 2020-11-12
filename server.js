@@ -82,7 +82,7 @@ const publishTweet = (status) => {
   status = tools.articlice(status)
   console.log(`... ${status}`);
 
-  client.post("statuses/update", { status }).then(() => {
+  lite.post("statuses/update", { status }).then(() => {
     log(`Tweet published: ${status}`)
     saveTweet(status)
   }).catch((e) => {
