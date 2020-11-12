@@ -77,7 +77,7 @@ const publishTweet = (text) => {
     return
   }
 
-  status = tools.articlice(text)
+  let status = tools.articlice(text)
   log('start -----')
 
   lite.post('statuses/update', { status }).then(() => {
