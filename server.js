@@ -4,6 +4,15 @@ require('dotenv').config({ path: __dirname + '/.env' })
 const fs = require('fs')
 const Twit = require('twit')
 
+import Lite from 'twitter-lite'
+
+const lite = new Lite({
+  consumer_key: process.env.TWITTER_CONSUMER_KEY,
+  consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
+  access_token_key: process.env.TWITTER_CONSUMER_ACCESS_TOKEN,
+  access_token_secret: process.env.TWITTER_CONSUMER_ACCESS_TOKEN_SECRET,
+})
+
 const Eye = require('./lib/eye')
 const eye = new Eye()
 
@@ -73,13 +82,11 @@ const publishTweet = (status) => {
   status = tools.articlice(status)
   console.log(`... ${status}`);
 
-  T.post('statuses/update', { status }, (error, data, response) => {
-    if (error) {
-      log(`Error publishing tweet: ${error}`)
-      return
-    }
+  client.post("statuses/update", { status }).then(() => {
     log(`Tweet published: ${status}`)
     saveTweet(status)
+  }).catch((e) => {
+    console.log(e)
   })
 }
 
