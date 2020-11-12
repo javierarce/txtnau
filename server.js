@@ -1,13 +1,14 @@
 'use strict'
 require('dotenv').config()
-const readline = require('readline');
 
 const fs = require('fs')
 
 const Vision = require('./lib/eye')
 const Eye = new Vision()
 const Twit = require('twit')
-const Articles = require('articles')
+
+const HTML = require('./lib/html')
+const html = new HTML() 
 
 let metadata = require('./metadata.json')
 
@@ -100,52 +101,12 @@ const analyzeTweet = (tweet) => {
 
       publishTweet(description)
       saveTweet(description)
-      buildHTML()
+      html.build()
     }
   })
 }
 
-const buildHTML = () => {
-  fs.readFile('tweets.txt', function(err, data) {
-    if (err) {
-      throw err;
-    }
-
-    let lines = data.toString().trim().split('\n');
-
-    let body = []
-
-    lines.reverse().forEach((line) => {
-
-      if (/^[a|an] /.test(line)) {
-        line = `I see ${line},`
-      } else {
-        const [head, ...rest] = line.split(' '); 
-        let article = Articles.articlize(head)
-        line = `I see ${article} ${rest.join(', ')}`
-      }
-
-      body.push(`<span>${line}</span> `)
-    })
-
-    body.push('<span>I see&hellip;</span>')
-    body = body.join('')
-
-    let top = '<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"><title>txtnau</title><style> body { font-size: 1.8em; line-height: 145%; font-weight: normal; margin: 3em; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; } span { opacity: 0; transition: opacity 800ms ease-in-out; } span.is-visible { opacity: 1; } .Content { width: 800px; margin: auto; } </style> <script> window.onload = () => { let i = 0; document.querySelectorAll("span").forEach((item) => { i += 200; item.style.transitionDelay = `${i}ms`; item.classList.add("is-visible"); }) } </script> </head> <body> <div class="Content">'
-
-    let bottom = '</div> </body> </html>'
-    const html = `${top}${body}${bottom}`
-
-    let fileName = 'www/index.html'
-    let stream = fs.createWriteStream(fileName)
-
-    stream.once('open', (fd) => {
-      stream.end(html)
-    })
-  })
-}
 
 
 T.get('statuses/user_timeline', { user_id: process.env.TWITTER_USER_ID, count: TWITTER_COUNT }, onResponse)
-
 
