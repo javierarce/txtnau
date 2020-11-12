@@ -31,7 +31,9 @@ const T = new Twit(TWITTER_CONFIG)
 
 const saveTweet = (status) => {
   fs.appendFile('tweets.txt', `${status}\n`, (error) => {
-    console.log(error);
+    if (error) {
+      log(error)
+    }
   })
 }
 
@@ -67,7 +69,11 @@ const publishTweet = (status) => {
 
   status = tools.articlice(status)
 
-  T.post('statuses/update', { status }, (err, data, response) => {
+  T.post('statuses/update', { status }, (error, data, response) => {
+    if (error) {
+      log(`Error publishing tweet: ${error}`)
+      return
+    }
     log(`Tweet published: ${status}`)
   })
 }
