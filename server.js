@@ -42,7 +42,7 @@ const log = (txt) => {
 }
 
 const wasTweetPublished = (newID) => {
-  let savedID = metadata.id
+  let savedID = +metadata.id
 
   return newID > savedID
 }
