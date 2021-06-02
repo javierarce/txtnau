@@ -20,6 +20,7 @@ jobs:
         USERNAME: ${{ secrets.USERNAME }}
         PORT: ${{ secrets.PORT }}
         KEY: ${{ secrets.SSHKEY }}
+        PASSPHRASE: ${{ secrets.PASSPHRASE }}
       with:
          source: "."
          target: "/home/javier/txtnau"
